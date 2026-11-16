@@ -1,0 +1,14 @@
+services:
+  meal-planner:
+    build: .
+    image: gearlogix/meal-planner:latest
+    container_name: meal-planner
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      TZ: America/New_York
+      # Locks add/edit/delete/import behind a passcode. Set it in .env (never commit it).
+      ADMIN_PASSCODE: ${ADMIN_PASSCODE:-}
+    volumes:
+      - /mnt/user/appdata/meal-planner:/data
