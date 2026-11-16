@@ -37,5 +37,5 @@ export default defineConfig({
       },
     }),
   ],
-  server: { proxy: { '/api': 'http://localhost:8080' } },
+  server: { proxy: { '/api': 'http://localhost:8080' }, fs: { allow: ['..'] } },
 });

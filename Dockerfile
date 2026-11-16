@@ -4,6 +4,7 @@ WORKDIR /app/web
 COPY web/package.json web/package-lock.json ./
 RUN npm ci
 COPY web/ ./
+COPY shared/ /app/shared/
 RUN npm run build
 
 # ---- runtime ----
@@ -17,6 +18,7 @@ WORKDIR /app/server
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev
 COPY server/ ./
+COPY shared/ /app/shared/
 COPY --from=web /app/web/dist /app/web/dist
 RUN mkdir -p /data && chown -R node:node /data
 USER node

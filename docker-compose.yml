@@ -10,5 +10,7 @@ services:
       TZ: America/New_York
       # Locks add/edit/delete/import behind a passcode. Set it in .env (never commit it).
       ADMIN_PASSCODE: ${ADMIN_PASSCODE:-}
+      # Encrypts the stored Claude API key. Long random string, kept in .env.
+      MP_SECRET_KEY: ${MP_SECRET_KEY:-}
     volumes:
       - /mnt/user/appdata/meal-planner:/data

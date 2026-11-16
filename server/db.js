@@ -32,6 +32,61 @@ CREATE TABLE IF NOT EXISTS recipes (
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT);
+
+CREATE TABLE IF NOT EXISTS profiles (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  name       TEXT NOT NULL UNIQUE COLLATE NOCASE,
+  pin_hash   TEXT,
+  prefs      TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS sessions (
+  token_hash TEXT PRIMARY KEY,
+  profile_id INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  is_admin   INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS goals (
+  profile_id INTEGER PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
+  kcal REAL, protein_g REAL, carbs_g REAL, fat_g REAL,
+  calc TEXT NOT NULL DEFAULT '{}'
+);
+CREATE TABLE IF NOT EXISTS favorites (
+  profile_id INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  recipe_id  TEXT NOT NULL,
+  PRIMARY KEY (profile_id, recipe_id)
+);
+CREATE TABLE IF NOT EXISTS cooked (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  recipe_id  TEXT NOT NULL,
+  cooked_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS plan_items (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id  INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  date        TEXT NOT NULL,
+  slot        TEXT NOT NULL,
+  recipe_id   TEXT,
+  servings    REAL NOT NULL DEFAULT 1,
+  custom_name TEXT,
+  kcal REAL, protein_g REAL, carbs_g REAL, fat_g REAL,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS plan_by_date ON plan_items(profile_id, date);
+CREATE TABLE IF NOT EXISTS grocery_extra (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  profile_id INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  recipe_id  TEXT,
+  servings   REAL,
+  text       TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS grocery_checks (
+  profile_id INTEGER NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  item_key   TEXT NOT NULL,
+  PRIMARY KEY (profile_id, item_key)
+);
 `);
 
 const JSON_COLS = ['ingredients', 'steps', 'sides'];
