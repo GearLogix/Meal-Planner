@@ -59,6 +59,7 @@ PWA install needs HTTPS. Put the app behind a Cloudflare Tunnel, `tailscale serv
 ## Environment
 | Variable | Default | Purpose |
 |---|---|---|
+| `PUID` / `PGID` | 99 / 100 | Owner of files in `/data` (Unraid nobody:users) |
 | `PORT` | 8080 | HTTP port inside the container |
 | `DATA_DIR` | /data | SQLite database and key file |
 | `ADMIN_PASSCODE` | (empty = no lock) | Locks admin features |
@@ -67,7 +68,7 @@ PWA install needs HTTPS. Put the app behind a Cloudflare Tunnel, `tailscale serv
 | `PROTEIN_PLATE_URL` / `PROTEIN_PLATE_API_URL` | Cade's URLs | Import sources |
 | `ANTHROPIC_BASE_URL` | https://api.anthropic.com | Override for testing |
 
-Re-import any time from Settings or with `docker exec meal-planner npm run import`. Re-import overwrites Cade's recipes in place (including any edits you made to them); your own `MP-` recipes are untouched.
+Re-import any time from Settings or with `docker exec -u 99:100 meal-planner npm run import`. Re-import overwrites Cade's recipes in place (including any edits you made to them); your own `MP-` recipes are untouched.
 
 ## Backups
 Everything lives in `/mnt/user/appdata/meal-planner/` (`meal-planner.db` plus the WAL files). Include it in your appdata backup.
